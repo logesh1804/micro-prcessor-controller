@@ -1,0 +1,64 @@
+#include <reg52.h>
+
+// Define LCD data port
+#define LCD P1  
+
+// Control pins
+sbit RS = P2^0;
+sbit EN = P2^1;
+sbit RW = P2^2;
+
+// Delay function
+void delay() {
+    int i, j;
+    for(i = 0; i < 100; i++)
+        for(j = 0; j < 1000; j++);
+}
+
+// Send command to LCD
+void lcd_cmd(unsigned char cmd) {
+    LCD = cmd;   // Put command on data bus
+    RS = 0;      // Command mode
+    RW = 0;      // Write mode
+    EN = 1;      
+    delay();     
+    EN = 0;      // Latch command
+}
+
+// Send data to LCD
+void lcd_data(unsigned char dat) {
+    LCD = dat;   // Put data on data bus
+    RS = 1;      // Data mode
+    RW = 0;      
+    EN = 1;
+    delay();
+    EN = 0;      // Latch data
+}
+
+// Send string
+void lcd_string(char *str) {
+    while(*str) {
+        lcd_data(*str++);
+    }
+}
+
+// LCD Initialization
+void lcd_init() {
+    lcd_cmd(0x38); // 8-bit, 2 line, 5x7 font
+    lcd_cmd(0x0C); // Display ON, cursor OFF
+    lcd_cmd(0x06); // Auto increment cursor
+    lcd_cmd(0x01); // Clear display
+}
+
+// Main program
+void main() {
+    lcd_init();
+
+    lcd_cmd(0x80);          // First line
+    lcd_string("Hello");
+
+    lcd_cmd(0xC0);          // Second line
+    lcd_string("Embedded");
+
+    while(1);               // Infinite loop
+}
