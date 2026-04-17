@@ -1,6 +1,6 @@
 #include <reg52.h>
 
-// Define LCD data port
+
 #define LCD P1  
 
 // Control pins
@@ -44,21 +44,21 @@ void lcd_string(char *str) {
 
 // LCD Initialization
 void lcd_init() {
-    lcd_cmd(0x38); // 8-bit, 2 line, 5x7 font
-    lcd_cmd(0x0C); // Display ON, cursor OFF
-    lcd_cmd(0x06); // Auto increment cursor
-    lcd_cmd(0x01); // Clear display
+    lcd_cmd(0x20);
+    lcd_cmd(0x0C);
+    lcd_cmd(0x06);
+    lcd_cmd(0x01);
 }
 
-// Main program
+
 void main() {
     lcd_init();
 
-    lcd_cmd(0x80);          // First line
+    lcd_cmd(0x80);
     lcd_string("Hello");
 
-    lcd_cmd(0xC0);          // Second line
+    lcd_cmd(0xC0);          
     lcd_string("Embedded");
 
-    while(1);               // Infinite loop
+    while(1);               
 }
