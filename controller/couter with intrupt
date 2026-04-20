@@ -1,0 +1,37 @@
+#include<reg52.h>
+
+sbit SW = P3^3;
+
+#define led P1
+unsigned char count =0;
+
+void delay(){
+	int i,j;
+	for(i=0;i<200;i++){
+		for(j=0;j<200;j++){
+		}
+	}
+}
+
+void interruptt(void) interrupt 2{
+	
+	count++;
+	led = ~count;
+  delay();
+}
+
+void main(){
+	while(1){
+	led= 0x00;
+	delay();
+	led= 0xff;
+	delay();
+	
+	
+	EA = 1;
+	EX1 = 1;
+	IT1 = 1;
+	
+	
+	}
+}
