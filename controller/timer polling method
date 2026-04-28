@@ -1,0 +1,31 @@
+#include <reg52.h>
+
+void delay1ms()
+{
+    TMOD = 0x01;
+    TH0 = 0x3C;
+    TL0 = 0xB0;
+
+    TR0 = 1;
+    while(TF0 == 0);
+    TR0 = 0;
+    TF0 = 0;
+}
+
+void delay500ms()
+{
+    int i;
+    for(i=0;i<500;i++)
+        delay1ms();
+}
+
+void main()
+{
+    while(1)
+    {
+        P1 = 0xFF;
+        delay500ms();
+
+        P1 = 0x00;
+        delay500ms();
+    }
