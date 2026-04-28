@@ -1,0 +1,101 @@
+#include <reg52.h>
+#define LCD P2
+sbit RS = P3^0;
+sbit RW = P3^1;
+sbit EN = P3^2;
+static unsigned int tick=0;
+static int counth =11;
+static int countm =11;
+static int counts =11;
+
+void cmd(unsigned char c);
+void dat(unsigned char d);
+void update(void);
+
+
+
+
+void timer0_ISR(void) interrupt 1
+{
+    TH0 = 0x3C;
+    TL0 = 0xB0;      // 50 ms reload
+
+    tick++;
+
+    if(tick >= 20)
+    {
+        tick = 0;    // 1 second completed
+        counts ++;
+			update();			//every 1 sec
+    }
+}
+
+
+
+void cmd (unsigned char c){
+  RS = 0;
+  RW = 0;
+  LCD = c;
+  EN = 1;
+  EN = 0;
+}
+  
+void dat (unsigned char d){
+      RS = 1;
+      RW = 0;
+      LCD = d;
+      EN = 1;
+      EN = 0;
+  }
+ 
+	
+	void update(){
+		cmd(0x01);
+		
+    cmd(0x80);
+		
+		dat(counts/10 + '0'); 
+dat(counts%10 + '0');  
+		dat(':');
+   	dat(countm/10 + '0'); 
+dat(countm%10 + '0');  
+		dat(':');
+			dat(counth/10 + '0'); 
+dat(counth%10 + '0');  }
+
+void main()
+{
+    TMOD = 0x01;     // Timer0 Mode1
+
+    TH0 = 0x3C;
+    TL0 = 0xB0;
+
+    ET0 = 1;         // Timer0 interrupt enable
+    EA  = 1;         // Global interrupt enable
+    TR0 = 1;         // Start timer
+
+    while(1)
+    {
+			if (counts ==60){
+				countm++;
+				counts=0;
+    }
+			if (countm==60){
+				counth++;
+				countm=0;
+			}
+			if (counth==13){
+			counth=0;}
+				
+		}}
+
+
+
+
+
+	
+
+
+
+	
+	
